@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import AllowAny
@@ -7,6 +8,7 @@ from rest_framework.views import APIView
 
 from apps.users import serializers
 
+User = get_user_model()
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -35,3 +37,26 @@ class LoginView(APIView):
             return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        users = User.objects.all()
+
+        serializer = serializers.BaseUserSerializer(users, many=True)
+
+        return Response(serializer.data)
+
+
+class UserObtainView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        requested_user_id = kwargs.get('user_id')
+
+        requested_user = get_object_or_404(User, pk=requested_user_id)
+
+        serializer = serializers.BaseUserSerializer(requested_user)
+
+        return Response(serializer.data)

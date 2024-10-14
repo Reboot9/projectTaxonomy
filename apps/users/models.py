@@ -26,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role_id = models.PositiveIntegerField(blank=True, null=True)
     active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    # language = models.ForeignKey('Language', models.DO_NOTHING)  # Make sure Language is defined
+    language = models.ForeignKey('translations.Language', on_delete=models.DO_NOTHING)
 
     objects = UserManager()
 
@@ -59,41 +59,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Check if the user has any permissions for the app
         return super().has_module_perms(app_label)
 
-# class CustomUser(AbstractBaseUser, PermissionsMixin):
-#     email = models.EmailField(unique=True)
-#     first_name = models.CharField(max_length=30)
-#     last_name = models.CharField(max_length=30)
-#     is_active = models.BooleanField(default=True)
-#     is_staff = models.BooleanField(default=False)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#
-#     objects: UserManager = UserManager()
-#
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = []
-#
-#     def __str__(self):
-#         return self.email
-#
-#     def has_perm(self, perm, obj=None) -> bool:
-#         """
-#         Check if the user has the specified permission.
-#         """
-#         # If the user is a superuser, they automatically have all permissions
-#         if self.is_superuser:
-#             return True
-#
-#         # Otherwise, check the specific permission
-#         return self.user_permissions.filter(codename=perm).exists() or self.groups.filter(permissions__codename=perm).exists()
-#
-#     def has_module_perms(self, app_label) -> bool:
-#         """
-#         Check if the user has any permissions for the specified app/module.
-#         """
-#         # Superusers have all permissions
-#         if self.is_superuser:
-#             return True
-#         # Check if the user has any permissions for the app
-#         return super().has_module_perms(app_label)
+
+class UserRole(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'user_role'
 
