@@ -24,7 +24,7 @@ class NotificationTemplate(models.Model):
 
 
 class UserNotification(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True, related_name='notifications')
     notification_template = models.ForeignKey(NotificationTemplate, models.DO_NOTHING, blank=True, null=True)
     notification_type = models.IntegerField(default=1)
     status = models.IntegerField(default=0,)

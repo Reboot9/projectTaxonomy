@@ -18,12 +18,14 @@ from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.template.defaulttags import url
 from django.urls import include
 from django.urls import path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('apps.users.urls')),
+    path('notifications/', include('apps.notifications.urls')),
 ]
 
 if settings.DEBUG:
@@ -34,3 +36,5 @@ if settings.DEBUG:
 
     # Include debug toolbar URLs
     urlpatterns += debug_toolbar_urls()
+
+    urlpatterns += [path('api-auth/', include('rest_framework.urls')), ]
