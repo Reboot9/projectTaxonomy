@@ -11,6 +11,11 @@ class Language(models.Model):
         managed = False
         db_table = 'language'
 
+    @classmethod
+    def get_default_pk(cls):
+        language_obj, created = cls.objects.get_or_create(name='en')
+
+        return language_obj.id
 
 FIELD_CHOICES = [
     ("name", 1),
