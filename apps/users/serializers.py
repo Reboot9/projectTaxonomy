@@ -28,8 +28,13 @@ class UserRegistrationSerializer(BaseUserSerializer):
 
         return user
 
-class UserLoginSerializer(BaseUserSerializer):
-    password = serializers.CharField(write_only=True)
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(
+        max_length=128, min_length=8, style={"input_type": "password"}, write_only=True
+    )
 
-    class Meta(BaseUserSerializer.Meta):
-        fields = BaseUserSerializer.Meta.fields + ["password"]
+    class Meta:
+        fields = ["email", "password"]
+
+

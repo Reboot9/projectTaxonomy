@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from apps.translations.models import Language
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -26,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     role_id = models.PositiveIntegerField(blank=True, null=True)
     active = models.BooleanField(default=True)
     verified = models.BooleanField(default=False)
-    language = models.ForeignKey('translations.Language', on_delete=models.DO_NOTHING)
+    language = models.ForeignKey('translations.Language', on_delete=models.DO_NOTHING, default=Language.get_default_pk)
 
     objects = UserManager()
 
