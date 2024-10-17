@@ -14,7 +14,7 @@ class Country(models.Model):
 
 
 class Project(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True, related_name='projects')
     name = models.CharField(max_length=510, blank=True, null=True)
     address = models.CharField(max_length=510, blank=True, null=True)
     started = models.DateTimeField(auto_now_add=True)
