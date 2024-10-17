@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from apps.notifications import models
-from apps.translations.models import TranslationString
 
 
 class NotificationCategorySerializer(serializers.ModelSerializer):
@@ -22,10 +21,14 @@ class NotificationTemplateSerializer(serializers.ModelSerializer):
 
 class UserNotificationSerializer(serializers.ModelSerializer):
     txt = serializers.SerializerMethodField()
-    # notification_template = NotificationTemplateSerializer(read_only=True)
+    notification_category = NotificationCategorySerializer(
+        read_only=True,
+        source="notification_template.notification_category"
+    )
+
     class Meta:
         model = models.UserNotification
-        fields = ['user', 'txt',]
+        fields = ['user', 'notification_type', 'status', 'txt', 'notification_category']
 
     def get_txt(self, obj):
         notification_template = obj.notification_template
