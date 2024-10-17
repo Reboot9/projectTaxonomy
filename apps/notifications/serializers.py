@@ -28,19 +28,20 @@ class UserNotificationSerializer(serializers.ModelSerializer):
         fields = ['user', 'txt',]
 
     def get_txt(self, obj):
-        translation = TranslationString.objects.filter(
-            # content_type=ContentType.objects.get_for_model(models.NotificationTemplate),
-            # object_id=obj.notification_template.pk,
-            language=obj.user.language
-        ).first()
+        notification_template = obj.notification_template
 
-        notification_options = models.UserNotificationOption.objects.filter(user_notification=obj)
+        if notification_template and notification_template.prefetched_translations:
+            translation = notification_template.prefetched_translations[0]
+            txt = translation.text
+        else:
+            txt = obj.notification_template.txt
 
+        notification_options = obj.prefetched_options
         # Create dict which contains field_id and text for replacement
         field_replacements = {option.field_id: option.txt for option in notification_options}
 
         # Replace text with Notification Option values
-        formatted_text = translation.text
+        formatted_text = txt
         for key, value in field_replacements.items():
             formatted_text = formatted_text.replace(f'{{{key}}}', value)
 

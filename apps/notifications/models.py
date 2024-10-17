@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 User = get_user_model()
@@ -17,6 +18,7 @@ class NotificationTemplate(models.Model):
     notification_category = models.ForeignKey(NotificationCategory, models.DO_NOTHING, blank=True, null=True)
     name = models.CharField(max_length=32, blank=True, null=True)
     txt = models.CharField(max_length=255, blank=True, null=True)
+    translations = GenericRelation('translations.TranslationString')
 
     class Meta:
         managed = False
@@ -36,7 +38,7 @@ class UserNotification(models.Model):
 
 
 class UserNotificationOption(models.Model):
-    user_notification = models.ForeignKey(UserNotification, models.DO_NOTHING, blank=True, null=True)
+    user_notification = models.ForeignKey(UserNotification, models.DO_NOTHING, blank=True, null=True, related_name='options')
     field_id = models.IntegerField(blank=True, null=True)
     txt = models.CharField(max_length=32, blank=True, null=True)
 
