@@ -9,12 +9,14 @@ from apps.notifications import models as notifications_models
 from apps.notifications import serializers as notifications_serializers
 from apps.notifications.filters.notification_filter import NotificationFilter
 from apps.translations import models as translation_models
+from apps.notifications.paginations import CustomPageNumberPagination
 
 
 class NotificationListView(APIView):
     permission_classes = (IsAuthenticated,)
-    filter_backends = (filters.DjangoFilterBackend, filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = NotificationFilter
+    pagination_class = CustomPageNumberPagination
 
     def get(self, request, *args, **kwargs):
         notification_query = notifications_models.UserNotification.objects.filter(
@@ -42,8 +44,13 @@ class NotificationListView(APIView):
             queryset=notification_query,
             request=request,
         )
-        user_notification_serializer = notifications_serializers.UserNotificationSerializer(notification_filterset.qs, many=True)
-        return Response(user_notification_serializer.data)
+
+        filtered_queryset = notification_filterset.qs
+        paginator = self.pagination_class()
+        paginated_queryset = paginator.paginate_queryset(filtered_queryset, request)
+
+        user_notification_serializer = notifications_serializers.UserNotificationSerializer(paginated_queryset, many=True)
+        return paginator.get_paginated_response(user_notification_serializer.data)
 
 
 class NotificationDetailView(APIView):
