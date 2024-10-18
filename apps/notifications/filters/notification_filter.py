@@ -1,8 +1,7 @@
 from django_filters import rest_framework as django_filters
-from apps.notifications import models as notifications_models
 
-class CharInFilter(django_filters.BaseInFilter, django_filters.CharFilter):
-    pass
+from apps.notifications import models as notifications_models
+from apps.notifications.filters.base_filters import CharInFilter
 
 
 class NotificationFilter(django_filters.FilterSet):
@@ -11,7 +10,7 @@ class NotificationFilter(django_filters.FilterSet):
     category = django_filters.CharFilter(field_name='notification_template__notification_category__name',
                                          lookup_expr='iexact', )
     category_in = CharInFilter(field_name='notification_template__notification_category__name',
-                                         lookup_expr='in', )
+                               lookup_expr='in', )
 
 
     class Meta:
