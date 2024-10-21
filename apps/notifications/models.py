@@ -48,7 +48,7 @@ class UserNotificationOption(models.Model):
 
 
 class UserNotificationSetting(models.Model):
-    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(User, models.DO_NOTHING, blank=True, null=True, related_name='notification_settings')
     notification_template = models.ForeignKey(NotificationTemplate, models.DO_NOTHING, blank=True, null=True)
     system_notification = models.IntegerField(default=1)
     push_notification = models.IntegerField(default=1)
