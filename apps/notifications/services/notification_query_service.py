@@ -30,7 +30,7 @@ class NotificationQueryService:
                     user_notification__user=user),
                 to_attr='prefetched_options'
             ),
-        )
+        ).order_by('-created')
 
 
     @staticmethod
